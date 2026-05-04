@@ -9,7 +9,7 @@ This extension injects a highly responsive script directly into the TMS platform
 ## 🚀 Key Features
 
 *   **Live Market Data Pipeline**: The bot establishes a hidden data connection to the NEPSE Market Watch panel, reading Live Traded Prices (LTP) in real-time without needing to constantly refresh the order form.
-*   **Exchange Price Band Validation**: The bot automatically checks your target prices against the exchange's strict ±2% LTP boundary rule, gracefully pausing and retrying if the market shifts out of bounds.
+*   **Exchange Price Band Validation**: The bot automatically checks your target prices against the exchange's strict ±3% LTP boundary rule, gracefully pausing and retrying if the market shifts out of bounds.
 *   **Silent Mode (Ghost Tab)**: Enable this to launch a hidden, pinned background tab that does all the trading. This prevents the bot from hijacking your active browser tabs, allowing you to browse reports and portfolios freely while the bot works autonomously in the background.
 *   **Customizable UI**: Includes 5 beautiful color themes (Default, Aquatic, Desert, Dusk, Night Green) and Font Size scaling to fit your personal workflow.
 
@@ -42,13 +42,7 @@ Open the extension popup while logged into TMS. You can safely add, edit, or del
 3.  **Type**: `BUY` or `SELL`.
 4.  **Base Price**: Your primary "Anchor" price used to trigger the bot. See *Strategies* below.
 5.  **Trigger Condition**: 
-    *   `if LTP >= Base`: Triggers when the market pushes up strictly to or above your base price.
-    *   `if LTP <= Base`: Triggers when the market drops strictly to or below your base price.
-    *   `if LTP ≈ Base (%)`: A floating bracket strategy. The bot triggers if the live market price comes within your specified percentage of the base price (e.g., within 1.5% of Rs. 1000).
-6.  **Target Exact / Offset %**: 
-    *   `Exact Price`: If triggered, the bot will place the order exactly at your Base Price.
-    *   `Offset (+)` or `Offset (-)`: If triggered, the bot will place the order at your Base Price *plus or minus* a percentage. Useful for executing aggressive market-clearing orders or passive limit hunting.
-
+    *   `if LTP ≈ Base (%)`: A floating bracket strategy. The bot triggers if the live market price comes within your specified percentage of the base price (e.g., within ±3% LTP of Rs. 1000).
 ### 2. Execution Mode
 Once your orders are planned:
 1.  Toggle **Silent Mode (👻)** to ON if you want the bot to run invisibly.
@@ -69,26 +63,9 @@ If the market acts unpredictably and you need to stop all automation instantly, 
 *You want to buy NABIL, but only if it proves it has momentum by crossing 600.*
 *   **Type**: BUY
 *   **Base Price**: 600
-*   **Condition**: `if LTP >= Base`
+*   **Condition**: `if LTP =3% of Base`
 *   **Target**: Exact Price
-*   **Result**: The bot waits. If NABIL hits 600, 601, etc., it fires a buy limit order exactly at 600.
-
-### Strategy 2: "Aggressive Dip Buying" (LTP <= with Offset)
-*You want to catch a knife on SHIVM if it drops to 500, but you want to make absolutely sure your order fills instantly so you bid 1.5% higher than 500.*
-*   **Type**: BUY
-*   **Base Price**: 500
-*   **Condition**: `if LTP <= Base`
-*   **Target**: `Offset (+)` | `1.5%`
-*   **Result**: If SHIVM drops to 500, the bot instantly fires a buy order at 507.50. 
-
-### Strategy 3: "Trailing Sell Bracket" (LTP ≈ %)
-*You hold SPDL. Its current price is 300, and you want to trigger a sell if it hovers anywhere near 310, giving it a generous 2% wiggle room.*
-*   **Type**: SELL
-*   **Base Price**: 310
-*   **Condition**: `if LTP ≈ Base (%)` | Threshold: `2.0%`
-*   **Target**: Exact Price
-*   **Result**: The bot triggers automatically if the market price lands anywhere between 303.80 and 316.20, executing your sell at your fixed Anchor Price (310).
-
+*   **Result**: The bot waits. If NABIL hits 618, 615, etc., it fires a buy limit order exactly at 600.
 ---
 
 ## ⚙️ Settings
