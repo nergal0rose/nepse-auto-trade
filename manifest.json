@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "NEPSE TMS Order Automation",
+  "version": "1.0.0",
+  "description": "Pre-planned automated order execution based on market LTP for NEPSE TMS.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "scripting",
+    "activeTab",
+    "tabs",
+    "power"
+  ],
+  "host_permissions": [
+    "*://*.nepsetms.com.np/*"
+  ],
+  "action": {
+    "default_title": "NEPSE Automation"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.nepsetms.com.np/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

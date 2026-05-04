@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NEPSE Automation</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>NEPSE Auto Trade <span id="broker-id-badge" class="broker-badge waiting">Waiting for TMS...</span></h1>
+      <button id="settings-btn" title="Settings"
+        style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--text-main);">⚙️</button>
+      <div class="mode-toggle">
+        <label class="switch">
+          <input type="checkbox" id="mode-switch">
+          <span class="slider round"></span>
+        </label>
+        <span id="mode-label">Planning Mode</span>
+      </div>
+      <button id="kill-switch" class="btn-danger hidden">STOP ALL</button>
+    </header>
+
+    <main>
+      <!-- Settings Panel -->
+      <section id="settings-section" class="settings-panel hidden">
+        <h3>Settings</h3>
+        <div class="input-group">
+          <select id="theme-select" class="theme-picker">
+            <option value="default">🟣 Default (Tw Cen MT)</option>
+            <option value="aquatic">🔵 Aquatic (Segoe UI)</option>
+            <option value="desert">🟠 Desert (Georgia)</option>
+            <option value="dusk">🌸 Dusk (Trebuchet)</option>
+            <option value="nightgreen">🟢 Night Green (Consolas)</option>
+          </select>
+          <select id="font-size-select" class="theme-picker">
+            <option value="medium">Aa Medium Text</option>
+            <option value="small">aa Small Text</option>
+            <option value="large">AA Large Text</option>
+          </select>
+        </div>
+        <div class="tolerance-setting">
+          <div class="tolerance-header">
+            <label>Price Tolerance</label>
+            <span id="tolerance-display" class="tolerance-value">±3%</span>
+          </div>
+          <input type="range" id="tolerance-range" min="0.5" max="3" step="0.1" value="3" class="tolerance-slider">
+          <span class="helper-text">Bot only submits if price is within this range of LTP. Max ±3% (NEPSE limit).</span>
+        </div>
+        <div class="tolerance-setting">
+          <div class="tolerance-header">
+            <label>Advanced Triggers</label>
+            <label class="switch" style="margin:0;">
+              <input type="checkbox" id="advanced-triggers">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <span class="helper-text">Show ≥ / ≤ condition options for directional orders.</span>
+        </div>
+      </section>
+
+      <!-- Silent Mode Toggle -->
+      <section class="silent-mode-section" id="silent-section">
+        <div class="silent-toggle-row">
+          <div class="silent-label-group">
+            <span class="silent-icon">👻</span>
+            <div>
+              <span class="silent-title">Silent Mode</span>
+              <span class="silent-desc">Auto-open background tab for execution</span>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="silent-switch">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="silent-status hidden" id="silent-status">
+          <span class="ghost-dot" id="ghost-dot"></span>
+          <span id="ghost-label">Ghost Tab Inactive</span>
+        </div>
+      </section>
+
+      <section class="order-form" id="form-section">
+        <h3 id="form-title">Add New Order (<span id="order-count">0</span>/10)</h3>
+        <form id="add-order-form">
+          <!-- Row 1: Symbol, Qty, Buy/Sell -->
+          <div class="input-group">
+            <input type="text" id="symbol" placeholder="Symbol" list="symbol-list" required autocomplete="off"
+              style="text-transform:uppercase">
+            <datalist id="symbol-list"></datalist>
+            <input type="number" id="qty" placeholder="Qty" required min="10" style="width:80px;flex:0 0 80px;">
+            <select id="type" style="width:72px;flex:0 0 72px;">
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
+            </select>
+          </div>
+
+          <!-- Row 2: Trigger Price (+ optional condition in advanced mode) -->
+          <div class="input-group">
+            <input type="number" id="base-price" placeholder="Target Price" required step="0.1" style="flex:1;">
+            <select id="trigger-condition" class="advanced-only" style="flex:0 0 130px;display:none;">
+              <option value="auto" selected>Auto (Band)</option>
+              <option value=">=">if LTP ≥ Price</option>
+              <option value="<=">if LTP ≤ Price</option>
+            </select>
+          </div>
+          <span class="helper-text" style="display:block;margin-bottom:12px;">Places order when this price is within your tolerance range of LTP.</span>
+
+          <button type="submit" id="add-order-btn" class="btn-primary">Add Order</button>
+          <button type="button" id="cancel-edit-btn" class="btn-cancel hidden">✕ Cancel Edit</button>
+        </form>
+        <div id="form-error" class="error-msg hidden"></div>
+      </section>
+
+      <section class="order-list">
+        <h3>Planned Orders</h3>
+        <div id="orders-container">
+          <!-- Order cards injected here -->
+        </div>
+      </section>
+
+      <section class="audit-log hidden" id="audit-section" style="margin-top: 15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin:0;">Live Audit Trail</h3>
+          <button id="toggle-audit-size" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px;transition:transform 0.2s ease;" title="Toggle Audit Trail">▲</button>
+        </div>
+        <div id="audit-container"
+          style="background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:8px;height:120px;min-height:80px;resize:vertical;overflow-y:auto;border-radius:6px;border: 1px solid rgba(255,255,255,0.05);transition: height 0.3s ease;">
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="popup.js"></script>
+</body>
+
+</html>
